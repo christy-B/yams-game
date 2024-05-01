@@ -1,0 +1,70 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: ./api # Chemin vers le Dockerfile de l'API
+    ports:
+      - "5050:5050"
+    volumes:
+      - ./api:/usr/src/app # Montage du répertoire local dans le conteneur
+    environment:
+      - NODE_ENV=development # Définition de l'environnement Node.js
+      - PORT=5050 # Définition du port de l'API
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  app:
+    build:
+      context: ./app # Chemin vers le Dockerfile de l'application frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app:/usr/src/app # Montage du répertoire local dans le conteneur
+    environment:
+      - NODE_ENV=development # Définition de l'environnement Node.js
+    depends_on:
+      - api
+    networks:
+      - app-network
+
+  mongo:
+    container_name: docker_mongo
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: foobar
+    volumes:
+      - ./api/data/patries.json:/usr/src/patries.json
+      - docker_mongo_data:/data/db
+    networks:
+      - app-network
+
+  mongo-express:
+    container_name: docker_mongo_express
+    image: mongo-express:latest
+    depends_on:
+      - mongo
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=foobar
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin
+    ports:
+      - "8081:8081"
+    networks:
+      - app-network
+
+
+volumes:
+  docker_mongo_data:
+
+
+networks:
+  app-network:
+    driver: bridge

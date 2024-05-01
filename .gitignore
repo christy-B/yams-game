@@ -1,0 +1,51 @@
+# Ignore les répertoires dans le répertoire "app"
+app/node_modules/
+app/dist/
+app/build/
+app/logs/
+app/.vscode/
+app/.idea/
+app/data/
+
+# Ignore les fichiers dans le répertoire "app"
+app/.env
+app/.env.*
+app/*.log
+app/*.pid
+app/*~
+app/*.swp
+
+# Ignore les répertoires dans le répertoire "api"
+api/node_modules/
+api/dist/
+app/build/
+api/logs/
+api/.vscode/
+api/.idea/
+api/data/
+
+# Ignore les fichiers dans le répertoire "api"
+api/.env
+api/.env.*
+api/*.log
+api/*.pid
+api/*~
+api/*.swp
+
+
+
+# Ignore les répertoires
+node_modules/
+dist/
+logs/
+.vscode/
+.idea/
+data/
+
+# Ignore les fichiers
+.env
+.env.*
+*.log
+*.pid
+*~
+*.swp

@@ -1,0 +1,2 @@
+npm install --save-dev @types/validator
+npm install --save-dev @types/bcrypt
