@@ -1,47 +1,45 @@
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import SignUp from './Components/forms/SignUp';
-import Login from './Components/forms/Login';
+import { useState, useEffect } from 'react';
+import Main from './Components/Main';
 
 function App() {
+  const [canPlay, setCanPlay] =useState(false)
 
-  return (
-    <Router>
+  useEffect(() => {
+    const fetchData = async () => {
+        const response = await fetch('http://localhost:5050/api/patries/getCollection')
+        const patries = await response.json()
+        
+        let totalStock = 0;
+        let totalQuantityWon = 0;
+        patries.forEach((patrie: any) => {
+          totalStock += patrie.stock;
+          totalQuantityWon += patrie.quantityWon;
+        });
+
+        if (totalQuantityWon < totalStock) {
+          setCanPlay(true)
+        }else
+        console.log(totalStock, totalQuantityWon, canPlay)
+    };
+    fetchData();
+}, [])
+
+  if (canPlay) {
+    return <Main/>
+  } else{
+    return(
       <div className="App">
         <nav className="navbar navbar-expand-lg navbar-light fixed-top">
-          <div className="container">
-            <Link className="navbar-brand" to={'/sign-in'}>
-              GameYams
-            </Link>
-            <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
-              <ul className="navbar-nav ml-auto">
-                <li className="nav-item">
-                  <Link className="nav-link" to={'/sign-in'}>
-                    Login
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to={'/sign-up'}>
-                    Sign up
-                  </Link>
-                </li>
-              </ul>
+            <div className="container navbar-brand">
+                GameYams
             </div>
-          </div>
         </nav>
-        <div className="auth-wrapper">
-          <div className="auth-inner">
-            <Routes>
-              <Route path="/" element={<Login apiUrl='http://localhost:5050/api/user/login' method='POST' />} />
-              <Route path="/sign-in" element={<Login apiUrl='http://localhost:5050/api/user/login' method='POST' />} />
-              <Route path="/sign-up" element={<SignUp apiUrl='http://localhost:5050/api/user/signup' method='POST' />} />
-            </Routes>
-          </div>
-        </div>
+        <p>toutes les patisseries ont été gagné</p>
       </div>
-    </Router>
-  );
+    )
+  } 
 }
 
 export default App;

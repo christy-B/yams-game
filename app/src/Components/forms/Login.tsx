@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IBody } from "../types/ISignIn";
 import { useNavigate } from "react-router-dom";
 import { UseFetchData } from "../apiCall/FetchData";
@@ -8,7 +8,7 @@ const Login = ({ apiUrl, method }: { apiUrl: string, method: string }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate ();
+  const navigate = useNavigate();
   const { fetchData } = UseFetchData(apiUrl, method) as { fetchData: (body: IBody) => void };
 
   // le corps de l'api
@@ -21,13 +21,13 @@ const Login = ({ apiUrl, method }: { apiUrl: string, method: string }) => {
     setarg(event.target.value);
   }
 
-  const handleSubmit = async(event: any) => {
+
+  const handleSubmit = async (event: any) => {
     event.preventDefault(); // Empêche le comportement par défaut du formulaire
     try {
       // Appelez fetchData pour soumettre les données
       await fetchData(body);
-      // Rediriger vers la page de connexion si l'inscription est réussie
-      //navigate("/sign-in")
+      navigate("/game");
     } catch (error) {
       // Afficher le message d'erreur en cas d'échec de l'inscription
       setError("Failed to sign up. Please try again.");
@@ -63,6 +63,7 @@ const Login = ({ apiUrl, method }: { apiUrl: string, method: string }) => {
           Submit
         </button>
       </div>
+      <div>{error}</div>
     </form>
   );
 }

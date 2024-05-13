@@ -12,14 +12,12 @@ export async function createDocument<T extends Document>(
 // Fonction générique pour mettre à jour un document
 export async function updateDocument<T extends Document>(
   model: Model<T>,
-  id: string,
-  update: Partial<T>
+  id: string, 
+  data: any
 ): Promise<T | null> {
   // Utiliser findByIdAndUpdate pour mettre à jour le document
   const updatedDocument = await model.findByIdAndUpdate(
-    id,
-    { $push: update },
-    { new: true } // Pour renvoyer le document mis à jour
+    id, data, {new: true}
   );
 
   return updatedDocument;

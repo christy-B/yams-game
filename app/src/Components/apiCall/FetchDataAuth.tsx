@@ -1,34 +1,36 @@
 import { useState } from 'react';
 
-export const UseFetchData = (apiUrl:string, method:string) => {
+export const FetchDataAuth = (apiUrl: string) => {
   const [datas, setData] = useState([]);
   const [error, setError] = useState(null);
 
-  const fetchData = (body: {}) => {
+  const FetchDataAuth = (method: string, jwt: String) => {
+
     fetch(apiUrl, {
       method: method,
+      mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer' + ' ' + jwt,
         'Accept': 'application/json',
+        'Access-Control-Allow-Origin': '*'
       },
-      body: JSON.stringify(body)
+
     })
       .then(response => {
+        console.log(response)
         if (!response.ok) {
           throw new Error('La requête a échoué');
         }
         return response.json();
       })
       .then(data => {
-        setData(data);
-        if (data.token) {
-          localStorage.setItem('token', JSON.stringify(data.token));
-        }
+        setData(data['data']);
       })
       .catch(error => {
         setError(error);
       });
   };
 
-  return { datas, error, fetchData };
-}
+  return { datas, error, FetchDataAuth };
+};

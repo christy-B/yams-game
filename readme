@@ -1,2 +1,12 @@
+back:
 npm install --save-dev @types/validator
 npm install --save-dev @types/bcrypt
+npm install --save @types/cors
+
+
+front:
+npm i react-bootstrap
+npm install bootstrap
+npm install react-router-dom
+npm i @reduxjs/toolkit
+npm i react-redux

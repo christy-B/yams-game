@@ -38,7 +38,7 @@ routerAuth.post('/login', async (req: Request, res: Response) => {
       { userId: user?._id, email: user?.email },
       process.env.JWTPRIVATEKEY as string,
       {
-      expiresIn: "1m",
+      expiresIn: "1h",
       }
       );
     // reponse

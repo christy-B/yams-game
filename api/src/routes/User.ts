@@ -32,7 +32,7 @@ routerUser.post('/signup', HashPassword, async (req: Request, res: Response) => 
 
     // Enregistrement de l'utilisateur dans la base de données
     const createdUser: UserDocument = await createDocument(DbUser, newUser);
-
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.status(201).json(createdUser);
   } catch (error: any) {
     console.error('Error creating user:', error.message);
