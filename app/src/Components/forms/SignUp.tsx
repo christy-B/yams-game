@@ -25,8 +25,9 @@ const SignUp = () => {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault(); // Empêche le comportement par défaut du formulaire
+    const url = import.meta.env.VITE_BASE_URL + "/user/signup"
     try {
-      const result = await fetchData('http://localhost:5050/api/user/signup', 'POST', '', body);
+      const result = await fetchData(url, 'POST', '', body);
       if (result) {
         navigate("/sign-in")
       }

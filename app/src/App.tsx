@@ -2,28 +2,32 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { useState, useEffect } from 'react';
 import Main from './Components/Main';
+import { fetchData } from './Components/apiCall/FetchData';
 
 function App() {
   const [canPlay, setCanPlay] = useState(false)
 
   useEffect(() => {
-    const fetchData = async () => {
-        const response = await fetch('http://localhost:5050/api/patries/getCollection')
-        const patries = await response.json()
-        
-        let totalStock = 0;
-        let totalQuantityWon = 0;
-        patries.forEach((patrie: any) => {
-          totalStock += patrie.stock;
-          totalQuantityWon += patrie.quantityWon;
-        });
+    const fetchPatries = async () => {
+        try{
+          const patries = await fetchData('http://localhost:5050/api/patries/getCollection', 'GET')
+          
+          let totalStock = 0;
+          let totalQuantityWon = 0;
+          patries.forEach((patrie: any) => {
+            totalStock += patrie.stock;
+            totalQuantityWon += patrie.quantityWon;
+          });
 
-        if (totalQuantityWon < totalStock) {
-          setCanPlay(true)
-        }else
-        console.log(totalStock, totalQuantityWon, canPlay)
+          if (totalQuantityWon < totalStock) {
+            setCanPlay(true)
+          }else
+          console.log(totalStock, totalQuantityWon, canPlay)
+        } catch(error){
+          console.error(error)
+        }
     };
-    fetchData();
+    fetchPatries();
 }, [])
 
   if (canPlay) {

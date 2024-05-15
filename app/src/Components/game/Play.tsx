@@ -17,7 +17,7 @@ const Play = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const baseUrl = import.meta.env.VITE_BASE_URL
   const email = useSelector((state: any) => state.auth.email);
   const token = useSelector((state: any) => state.auth.token);
 
@@ -25,11 +25,11 @@ const Play = () => {
     email: email,
     quantityWon: 1,
   };
-
+  
   useEffect(() => {
     const fetchPastries = async () => {
       try {
-        const pastries = await fetchData('http://localhost:5050/api/patries/availables', 'GET');
+        const pastries = await fetchData(`${baseUrl}/patries/availables`, 'GET');
         setAvailablePastries(pastries);
       } catch (error) {
         console.error("Error fetching pastries:", error);
@@ -42,7 +42,7 @@ const Play = () => {
     if (!win) {
       if (attempt < 3) {
         try {
-          const data = await fetchData('http://localhost:5050/api/dice/roll-dice', 'GET', token);
+          const data = await fetchData(`${baseUrl}/dice/roll-dice`, 'GET', token);
           if (data.message === "Access token expired") {
             dispatch(logout());
             navigate("/sign-in");
@@ -69,7 +69,7 @@ const Play = () => {
               setPatrieId(won._id);
               console.log("won:", won)
               id = won._id;
-              await fetchData(`http://localhost:5050/api/patries/${id}/winners`, 'PUT', token, body);
+              await fetchData(`${baseUrl}/patries/${id}/winners`, 'PUT', token, body);
             }
             setMessage(`Vous avez gagné ${patrieWin} pâtisserie(s)`);
           } else {

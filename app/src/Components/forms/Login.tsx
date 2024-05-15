@@ -31,8 +31,9 @@ const Login = () => {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault(); // Empêche le comportement par défaut du formulaire
+    const url = import.meta.env.VITE_BASE_URL + "/user/login"
     try {
-      const result = await fetchData('http://localhost:5050/api/user/login', 'POST', '', body);
+      const result = await fetchData(url, 'POST', '', body);
       if (result.token) {
         let token = result.token;
         dispatch(loginSuccess({ email, token }));
