@@ -18,6 +18,24 @@ routerPatrie.get('/getCollection', async (req: Request, res: Response) => {
   }
 });
 
+// Route pour récupérer la liste des patries avec quantityWon inférieur à stock
+routerPatrie.get('/availables', async (req: Request, res: Response) => {
+  try {
+    // Récupérer toutes les patries depuis la base de données
+    const patries: PatrieDocument[] = await DbPatrie.find();
+    // Filtrer les patries récupérées selon vos critères
+    const filteredPatries = patries.filter((patrie) => {
+      return patrie.quantityWon < patrie.stock; // Exemple de condition de filtrage
+    });
+    
+    // Retourner la liste des patries en réponse
+    res.status(200).json(filteredPatries);
+  } catch (error) {
+    console.error('Error fetching patries:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
 
 routerPatrie.put('/:id/winners', async (req: Request, res: Response) => {
   try {
@@ -32,10 +50,10 @@ routerPatrie.put('/:id/winners', async (req: Request, res: Response) => {
     // Mettre à jour les gagnants de la patrie dans la base de données
     const updatedPatrie = await DbPatrie.findByIdAndUpdate(
       patrieId,
-      { $push: { winners: { email, quantityWon } } },
+      { $inc: { quantityWon }, $push: { winners: { email } } },
       { new: true }
     );
-
+    
     // Vérifier si la patrie a été mise à jour avec succès
     if (!updatedPatrie) {
       throw new Error('Patrie not found');

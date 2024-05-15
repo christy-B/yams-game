@@ -33,7 +33,7 @@ app.use(cors(corsOptions));
 app.use('/api/user', routerUser);
 app.use('/api/user', routerAuth);
 app.use('/api/patries', routerPatrie);
-app.use('/api/dice', routerDice)
+app.use('/api/dice', Auth, routerDice)
 
 
 // Server des fichiers statiques

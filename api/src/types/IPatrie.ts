@@ -3,5 +3,5 @@ export interface IPatrie{
     image: string;
     stock: number;
     quantityWon: number;
-    winners?: { email: string; quantityWon: number }[];
+    winners?: { email: string }[];
 }

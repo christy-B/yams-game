@@ -1,16 +1,15 @@
 import { useState } from "react";
-import { UseFetchData } from "../apiCall/FetchData";
+import { fetchData } from "../apiCall/FetchData";
 import { IBody } from "../types/ISignUp";
-import { useNavigate  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const SignUp = ({ apiUrl, method }: { apiUrl: string, method: string }) => {
+const SignUp = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate ();
-  const { fetchData } = UseFetchData(apiUrl, method) as { fetchData: (body: IBody) => void };
+  const navigate = useNavigate();
 
   // le corps de l'api
   const body: IBody = {
@@ -24,18 +23,16 @@ const SignUp = ({ apiUrl, method }: { apiUrl: string, method: string }) => {
     setarg(event.target.value);
   }
 
-  const handleSubmit = async(event: any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault(); // Empêche le comportement par défaut du formulaire
     try {
-      // Appelez fetchData pour soumettre les données
-      await fetchData(body);
-      // Rediriger vers la page de connexion si l'inscription est réussie
-      navigate("/sign-in")
+      const result = await fetchData('http://localhost:5050/api/user/signup', 'POST', '', body);
+      if (result) {
+        navigate("/sign-in")
+      }
     } catch (error) {
-      // Afficher le message d'erreur en cas d'échec de l'inscription
       setError("Failed to sign up. Please try again.");
     }
-
   }
 
   return (

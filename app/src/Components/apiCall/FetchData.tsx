@@ -1,34 +1,31 @@
-import { useState } from 'react';
+export async function fetchData(url: string, method: string, token?:string, body?: {}) {
+  try {
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
 
-export const UseFetchData = (apiUrl:string, method:string) => {
-  const [datas, setData] = useState([]);
-  const [error, setError] = useState(null);
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
 
-  const fetchData = (body: {}) => {
-    fetch(apiUrl, {
-      method: method,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify(body)
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('La requête a échoué');
-        }
-        return response.json();
-      })
-      .then(data => {
-        setData(data);
-        if (data.token) {
-          localStorage.setItem('token', JSON.stringify(data.token));
-        }
-      })
-      .catch(error => {
-        setError(error);
-      });
-  };
+    const options: RequestInit = {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : undefined,
+    };
 
-  return { datas, error, fetchData };
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new Error('Request failed');
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
 }

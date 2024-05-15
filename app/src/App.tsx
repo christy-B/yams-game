@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Main from './Components/Main';
 
 function App() {
-  const [canPlay, setCanPlay] =useState(false)
+  const [canPlay, setCanPlay] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {

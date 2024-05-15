@@ -1,15 +1,22 @@
-import { useEffect, useState } from "react";
+//Components/forms/Login./tsx
+
+import { useState } from "react";
 import { IBody } from "../types/ISignIn";
 import { useNavigate } from "react-router-dom";
-import { UseFetchData } from "../apiCall/FetchData";
+import { fetchData } from "../apiCall/FetchData";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../redux/authSlice";
 
-const Login = ({ apiUrl, method }: { apiUrl: string, method: string }) => {
+
+const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { fetchData } = UseFetchData(apiUrl, method) as { fetchData: (body: IBody) => void };
+
+
+  const dispatch = useDispatch();
 
   // le corps de l'api
   const body: IBody = {
@@ -25,11 +32,13 @@ const Login = ({ apiUrl, method }: { apiUrl: string, method: string }) => {
   const handleSubmit = async (event: any) => {
     event.preventDefault(); // Empêche le comportement par défaut du formulaire
     try {
-      // Appelez fetchData pour soumettre les données
-      await fetchData(body);
-      navigate("/game");
+      const result = await fetchData('http://localhost:5050/api/user/login', 'POST', '', body);
+      if (result.token) {
+        let token = result.token;
+        dispatch(loginSuccess({ email, token }));
+        navigate("/game");
+      }
     } catch (error) {
-      // Afficher le message d'erreur en cas d'échec de l'inscription
       setError("Failed to sign up. Please try again.");
     }
 
@@ -37,6 +46,7 @@ const Login = ({ apiUrl, method }: { apiUrl: string, method: string }) => {
 
   return (
     <form onSubmit={handleSubmit}>
+      <div>{error}</div>
       <h3>Sign In</h3>
       <div className="mb-3">
         <label>Email address</label>
@@ -63,7 +73,6 @@ const Login = ({ apiUrl, method }: { apiUrl: string, method: string }) => {
           Submit
         </button>
       </div>
-      <div>{error}</div>
     </form>
   );
 }
