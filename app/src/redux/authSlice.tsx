@@ -4,12 +4,16 @@ interface AuthState {
   isAuthenticated: boolean;
   email: string | null;
   token: string | null;
+  canPlay: boolean;
+  isWin: boolean;
 }
 
 const initialState: AuthState = {
   isAuthenticated: false,
   email: null,
   token: null,
+  canPlay: false,
+  isWin: false,
 };
 
 interface LoginPayload {
@@ -31,9 +35,15 @@ const authSlice = createSlice({
       state.email = null;
       state.token = null;
     },
+    playAuthorization(state) {
+      state.canPlay = true;
+    },
+    playWin(state) {
+      state.isWin = true;
+    },
   },
 });
 
-export const { loginSuccess, logout } = authSlice.actions;
+export const { loginSuccess, logout, playAuthorization, playWin } = authSlice.actions;
 
 export default authSlice.reducer;

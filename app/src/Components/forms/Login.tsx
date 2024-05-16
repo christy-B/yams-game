@@ -5,7 +5,7 @@ import { IBody } from "../types/ISignIn";
 import { useNavigate } from "react-router-dom";
 import { fetchData } from "../apiCall/FetchData";
 import { useDispatch } from "react-redux";
-import { loginSuccess } from "../../redux/authSlice";
+import { loginSuccess, playWin } from "../../redux/authSlice";
 
 
 const Login = () => {
@@ -17,6 +17,8 @@ const Login = () => {
 
 
   const dispatch = useDispatch();
+
+  const baseUrl = import.meta.env.VITE_BASE_URL
 
   // le corps de l'api
   const body: IBody = {
@@ -37,6 +39,16 @@ const Login = () => {
       if (result.token) {
         let token = result.token;
         dispatch(loginSuccess({ email, token }));
+        //checker si la personne a deja gagné une patisserie
+        const patries = await fetchData(`${baseUrl}/patries/getCollection`, 'GET');
+        for (let i = 0; i < patries.length; i++) {
+          const winners = patries[i].winners;
+          for (let j = 0; j < winners.length; j++) {
+            if (winners[j].email === email) {
+              dispatch(playWin());
+            }
+          }
+        }
         navigate("/game");
       }
     } catch (error) {
@@ -48,9 +60,9 @@ const Login = () => {
   return (
     <form onSubmit={handleSubmit}>
       <div>{error}</div>
-      <h3>Sign In</h3>
+      <h3>Connexion</h3>
       <div className="mb-3">
-        <label>Email address</label>
+        <label>Email</label>
         <input
           type="email"
           className="form-control"
@@ -60,7 +72,7 @@ const Login = () => {
         />
       </div>
       <div className="mb-3">
-        <label>Password</label>
+        <label>Mot de passe</label>
         <input
           type="password"
           className="form-control"
@@ -71,7 +83,7 @@ const Login = () => {
       </div>
       <div className="d-grid">
         <button type="submit" className="btn btn-primary">
-          Submit
+          Se connecter
         </button>
       </div>
     </form>
