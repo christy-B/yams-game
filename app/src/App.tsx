@@ -11,15 +11,19 @@ import Login from './Components/forms/Login';
 import SignUp from './Components/forms/SignUp';
 import Play from './Components/game/Play';
 import PrivateRoutes from './Components/utility/PrivateRoutes';
+import { useSelector } from 'react-redux';
 
 function App() {
   const dispatch = useDispatch();
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
+  const token = useSelector((state: any) => state.auth.token);
+  console.log("jxt:", token)
+
   useEffect(() => {
     const fetchPatries = async () => {
       try {
-        const patries = await fetchData(`${baseUrl}/patries/getCollection`, 'GET');
+        const patries = await fetchData(`${baseUrl}/patries/getCollection`, 'GET', token);
         
         let totalStock = 0;
         let totalQuantityWon = 0;
@@ -39,7 +43,7 @@ function App() {
       }
     };
     fetchPatries();
-  }, []);
+  }, [token]);
 
   return (
     <div className="App"> 

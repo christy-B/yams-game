@@ -38,9 +38,10 @@ const Login = () => {
       const result = await fetchData(url, 'POST', '', body);
       if (result.token) {
         let token = result.token;
+        localStorage.setItem("token", token);
         dispatch(loginSuccess({ email, token }));
         //checker si la personne a deja gagné une patisserie
-        const patries = await fetchData(`${baseUrl}/patries/getCollection`, 'GET');
+        const patries = await fetchData(`${baseUrl}/patries/getCollection`, 'GET', token);
         for (let i = 0; i < patries.length; i++) {
           const winners = patries[i].winners;
           for (let j = 0; j < winners.length; j++) {

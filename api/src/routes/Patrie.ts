@@ -1,6 +1,5 @@
 import { Router, Request, Response } from 'express';
 import DbPatrie, {PatrieDocument} from '../model/DbPatrie';
-import { updateDocument } from '../utility/Crud';
 
 const routerPatrie = Router();
 

@@ -4,6 +4,7 @@ import { createDocument } from '../utility/Crud';
 import { IUser } from '../types/IUser';
 import { Request, Response } from 'express';
 import { HashPassword } from '../middleware/HashPassword';
+import { Auth } from '../middleware/Auth';
 
 
 export const routerUser = Router();
@@ -37,5 +38,17 @@ routerUser.post('/signup', HashPassword, async (req: Request, res: Response) => 
   } catch (error: any) {
     console.error('Error creating user:', error.message);
     res.status(400).json({ message: error.message || 'Bad Request' });
+  }
+});
+
+// Route pour récupérer tous les utilisateurs
+routerUser.get('/getCollection', Auth, async (req: Request, res: Response) => {
+  try {
+    const users: UserDocument[] = await DbUser.find();
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.json(users);
+  } catch (error: any) {
+    console.error('Error fetching users:', error.message);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 });

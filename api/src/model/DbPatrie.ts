@@ -2,7 +2,7 @@ import { Schema, model, Document } from 'mongoose';
 import { IPatrie } from '../types/IPatrie';
 
 
-export interface PatrieDocument extends IPatrie, Document {}
+export interface PatrieDocument extends IPatrie, Document { }
 
 // Schéma Mongoose pour le modèle Patie
 const patrieSchema: Schema<PatrieDocument> = new Schema({
@@ -12,7 +12,8 @@ const patrieSchema: Schema<PatrieDocument> = new Schema({
   quantityWon: { type: Number, required: true },
   winners: [{
     email: { type: String },
-    quantityWon: { type: Number }
+    quantityWon: { type: Number },
+    date: { type: Date, default: Date.now }
   }]
 });
 

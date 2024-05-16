@@ -15,6 +15,7 @@ const Play = () => {
   const [win, setWin] = useState(false);
   const [availablePastries, setAvailablePastries] = useState<any[]>([]);
   const [patrieId, setPatrieId] = useState("");
+  const [user, setUser] = useState([]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -29,7 +30,30 @@ const Play = () => {
     quantityWon: 1,
   };
   
-  
+  useEffect(() => {
+    const fetchPastries = async () => {
+      try {
+        const pastries = await fetchData(`${baseUrl}/patries/availables`, 'GET', token);
+        setAvailablePastries(pastries);
+      } catch (error) {
+        console.error("Error fetching pastries:", error);
+      }
+    };
+    fetchPastries();
+  }, [patrieId]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const pastries = await fetchData(`${baseUrl}/patries/availables`, 'GET', token);
+        setAvailablePastries(pastries);
+      } catch (error) {
+        console.error("Error fetching pastries:", error);
+      }
+    };
+    fetchUser();
+  }, []);
+
   if (!canPlay) {
     return(
       <div>
@@ -47,18 +71,6 @@ const Play = () => {
       </div>
     )
   }
-
-  useEffect(() => {
-    const fetchPastries = async () => {
-      try {
-        const pastries = await fetchData(`${baseUrl}/patries/availables`, 'GET');
-        setAvailablePastries(pastries);
-      } catch (error) {
-        console.error("Error fetching pastries:", error);
-      }
-    };
-    fetchPastries();
-  }, [patrieId]);
 
   const handleClick = async () => {
     if (!win) {

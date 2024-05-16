@@ -2,11 +2,15 @@ import { useSelector } from "react-redux"
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchData } from "../apiCall/FetchData";
+import moment from 'moment';
 
 const Winners = () => {
     const [patrieWin, setPatrieWin] = useState<any[]>([]);
+    const [users, setUsers] = useState<any[]>([]);
+
     const canPlay = useSelector((state: any) => state.auth.canPlay);
     const baseUrl = import.meta.env.VITE_BASE_URL;
+    const token = useSelector((state: any) => state.auth.token);
 
     if (canPlay) {
         return (
@@ -20,7 +24,7 @@ const Winners = () => {
     useEffect(() => {
         const fetchPatries = async () => {
             try {
-                const patries = await fetchData(`${baseUrl}/patries/getCollection`, 'GET');
+                const patries = await fetchData(`${baseUrl}/patries/getCollection`, 'GET', token);
                 setPatrieWin(patries);
             } catch (error) {
                 console.error(error);
@@ -29,24 +33,42 @@ const Winners = () => {
         fetchPatries();
     }, []);
 
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const user = await fetchData(`${baseUrl}/user/getCollection`, 'GET', token);
+                setUsers(user);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchUser();
+    }, []);
+
+
     return (
         <div className="container">
           <h3 className="text-center my-4">Liste des gagnants</h3>
           <table className="table table-striped table-bordered">
             <thead>
               <tr>
-                <th>Patrie</th>
-                <th>Email</th>
+                <th>Patisseries</th>
+                <th>Nom & Prenom</th>
+                <th>Date</th>
               </tr>
             </thead>
             <tbody>
               {patrieWin.map((patrie) =>
-                patrie.winners.map((winner:any) => (
-                  <tr key={`${patrie.name}-${winner.email}`}>
-                    <td>{patrie.name}</td>
-                    <td>{winner.email}</td>
-                  </tr>
-                ))
+                patrie.winners.map((winner: any) => {
+                  const user = users.find((user: any) => winner.email === user.email);
+                  return (
+                    <tr key={`${patrie.name}-${winner.email}`}>
+                      <td>{patrie.name}</td>
+                      <td>{user ? `${user.lastname} ${user.firstname}` : ''}</td>
+                      <td>{moment(winner.date).format("YYYY-MM-DD")}</td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
